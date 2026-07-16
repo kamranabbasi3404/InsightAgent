@@ -68,9 +68,20 @@ function ConflictBanner({ conflicts }: { conflicts: Conflict[] }) {
   );
 }
 
+function renderTextWithFormatting(text: string, keyPrefix: string) {
+  const boldPattern = /\*\*([^*]+)\*\*/g;
+  const segments = text.split(boldPattern);
+  return segments.map((seg, i) => {
+    if (i % 2 === 1) {
+      return <strong key={`${keyPrefix}-${i}`} className="font-semibold text-text">{seg}</strong>;
+    }
+    return seg;
+  });
+}
+
 function renderMessageWithCitations(content: string, citations: Citation[]) {
   if (!citations || citations.length === 0) {
-    return <div className="whitespace-pre-wrap leading-relaxed">{content}</div>;
+    return <div className="whitespace-pre-wrap leading-relaxed">{renderTextWithFormatting(content, "fallback")}</div>;
   }
 
   // Replace [Source: ...] patterns with citation chips
@@ -87,7 +98,7 @@ function renderMessageWithCitations(content: string, citations: Citation[]) {
   while ((match = citationPattern.exec(content)) !== null) {
     // Add text before this match
     if (match.index > lastIndex) {
-      parts.push(content.slice(lastIndex, match.index));
+      parts.push(...renderTextWithFormatting(content.slice(lastIndex, match.index), `loop-${keyId++}`));
     }
 
     // Find matching citation
@@ -121,7 +132,7 @@ function renderMessageWithCitations(content: string, citations: Citation[]) {
 
   // Add remaining text
   if (lastIndex < content.length) {
-    parts.push(content.slice(lastIndex));
+    parts.push(...renderTextWithFormatting(content.slice(lastIndex), `end-${keyId++}`));
   }
 
   return <div className="whitespace-pre-wrap leading-relaxed">{parts}</div>;
