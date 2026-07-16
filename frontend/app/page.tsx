@@ -32,14 +32,23 @@ export default function Home() {
 
   const hasLoaded = useRef(false);
 
-  // Load chat history from localStorage on mount
+  // Load chat history and trace steps from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem("insight_agent_chat_history");
-    if (saved) {
+    const savedChat = localStorage.getItem("insight_agent_chat_history");
+    if (savedChat) {
       try {
-        setMessages(JSON.parse(saved));
+        setMessages(JSON.parse(savedChat));
       } catch (e) {
         console.error("Failed to parse chat history:", e);
+      }
+    }
+
+    const savedTrace = localStorage.getItem("insight_agent_trace_steps");
+    if (savedTrace) {
+      try {
+        setTraceSteps(JSON.parse(savedTrace));
+      } catch (e) {
+        console.error("Failed to parse trace steps:", e);
       }
     }
     hasLoaded.current = true;
@@ -51,6 +60,13 @@ export default function Home() {
       localStorage.setItem("insight_agent_chat_history", JSON.stringify(messages));
     }
   }, [messages]);
+
+  // Save trace steps to localStorage when traceSteps update
+  useEffect(() => {
+    if (hasLoaded.current) {
+      localStorage.setItem("insight_agent_trace_steps", JSON.stringify(traceSteps));
+    }
+  }, [traceSteps]);
 
   // Check backend health on mount
   useEffect(() => {
@@ -193,12 +209,14 @@ export default function Home() {
           </div>
 
           {/* Clear Chat */}
-          {messages.length > 0 && (
+          {(messages.length > 0 || traceSteps.length > 0) && (
             <button
               onClick={() => {
                 if (confirm("Are you sure you want to clear the chat history?")) {
                   setMessages([]);
+                  setTraceSteps([]);
                   localStorage.removeItem("insight_agent_chat_history");
+                  localStorage.removeItem("insight_agent_trace_steps");
                 }
               }}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-xs text-text-secondary hover:text-conflict hover:border-conflict hover:bg-conflict-light/10 transition-all cursor-pointer"
