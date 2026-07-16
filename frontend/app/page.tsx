@@ -29,6 +29,7 @@ export default function Home() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [backendStatus, setBackendStatus] = useState<"checking" | "online" | "offline">("checking");
   const [error, setError] = useState<string | null>(null);
+  const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
 
   const hasLoaded = useRef(false);
 
@@ -211,14 +212,7 @@ export default function Home() {
           {/* Clear Chat */}
           {(messages.length > 0 || traceSteps.length > 0) && (
             <button
-              onClick={() => {
-                if (confirm("Are you sure you want to clear the chat history?")) {
-                  setMessages([]);
-                  setTraceSteps([]);
-                  localStorage.removeItem("insight_agent_chat_history");
-                  localStorage.removeItem("insight_agent_trace_steps");
-                }
-              }}
+              onClick={() => setIsClearConfirmOpen(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-xs text-text-secondary hover:text-conflict hover:border-conflict hover:bg-conflict-light/10 transition-all cursor-pointer"
             >
               <span>🗑</span>
@@ -313,6 +307,41 @@ export default function Home() {
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
       />
+
+      {/* Clear Chat Confirmation Modal */}
+      {isClearConfirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs animate-fade-in">
+          <div className="bg-bg-card rounded-xl shadow-2xl border border-border w-full max-w-sm mx-4 p-5 animate-scale-up">
+            <div className="flex items-center gap-3 mb-3 text-conflict">
+              <span className="text-2xl">⚠️</span>
+              <h3 className="text-base font-bold text-text">Clear Chat History</h3>
+            </div>
+            <p className="text-xs text-text-secondary leading-relaxed mb-5">
+              Are you sure you want to clear the entire chat history and reasoning trace? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-2 text-xs">
+              <button
+                onClick={() => setIsClearConfirmOpen(false)}
+                className="px-3.5 py-2 rounded-lg border border-border hover:bg-bg-sidebar text-text transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setMessages([]);
+                  setTraceSteps([]);
+                  localStorage.removeItem("insight_agent_chat_history");
+                  localStorage.removeItem("insight_agent_trace_steps");
+                  setIsClearConfirmOpen(false);
+                }}
+                className="px-3.5 py-2 rounded-lg bg-conflict text-white hover:bg-conflict/90 font-medium transition-colors cursor-pointer"
+              >
+                Clear Chat
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
