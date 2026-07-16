@@ -139,97 +139,99 @@ export default function ChatWindow({
   }, [messages, isProcessing]);
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
-      {/* Empty state */}
-      {messages.length === 0 && !isProcessing && (
-        <div className="flex flex-col items-center justify-center h-full text-center max-w-md mx-auto">
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
-            <span className="text-3xl">🔬</span>
+    <div className="flex-1 overflow-y-auto px-4 py-6">
+      <div className="max-w-3xl mx-auto space-y-4 w-full flex flex-col">
+        {/* Empty state */}
+        {messages.length === 0 && !isProcessing && (
+          <div className="flex flex-col items-center justify-center h-full text-center max-w-md mx-auto py-12">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
+              <span className="text-3xl">🔬</span>
+            </div>
+            <h2 className="text-xl font-semibold text-text mb-2">
+              Welcome to InsightAgent
+            </h2>
+            <p className="text-sm text-text-secondary leading-relaxed">
+              Upload a document or just ask a question — I can search the web too.
+              I&apos;ll cite every claim and show you my reasoning step by step.
+            </p>
+            <div className="flex flex-wrap gap-2 mt-5 justify-center">
+              {[
+                "What are the key findings in my report?",
+                "Compare PDF data with latest web stats",
+                "Summarize recent developments in AI",
+              ].map((suggestion, i) => (
+                <button
+                  key={i}
+                  className="px-3 py-1.5 rounded-lg border border-border text-xs text-text-secondary
+                    hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
           </div>
-          <h2 className="text-xl font-semibold text-text mb-2">
-            Welcome to InsightAgent
-          </h2>
-          <p className="text-sm text-text-secondary leading-relaxed">
-            Upload a document or just ask a question — I can search the web too.
-            I&apos;ll cite every claim and show you my reasoning step by step.
-          </p>
-          <div className="flex flex-wrap gap-2 mt-5 justify-center">
-            {[
-              "What are the key findings in my report?",
-              "Compare PDF data with latest web stats",
-              "Summarize recent developments in AI",
-            ].map((suggestion, i) => (
-              <button
-                key={i}
-                className="px-3 py-1.5 rounded-lg border border-border text-xs text-text-secondary
-                  hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+        )}
 
-      {/* Messages */}
-      {messages.map((msg, index) => (
-        <div
-          key={index}
-          className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-fade-in`}
-        >
+        {/* Messages */}
+        {messages.map((msg, index) => (
           <div
-            className={`max-w-[75%] rounded-2xl px-4 py-3 ${
-              msg.role === "user"
-                ? "bg-primary text-white rounded-br-md"
-                : "bg-bg-card border border-border shadow-sm rounded-bl-md"
-            }`}
+            key={index}
+            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-fade-in`}
           >
-            {/* Route indicator for assistant messages */}
-            {msg.role === "assistant" && msg.route && (
-              <div className="mb-2">
-                <RouteIndicator route={msg.route} />
+            <div
+              className={`max-w-[85%] rounded-2xl px-4 py-3 ${
+                msg.role === "user"
+                  ? "bg-primary text-white rounded-br-md"
+                  : "bg-bg-card border border-border shadow-sm rounded-bl-md"
+              }`}
+            >
+              {/* Route indicator for assistant messages */}
+              {msg.role === "assistant" && msg.route && (
+                <div className="mb-2">
+                  <RouteIndicator route={msg.route} />
+                </div>
+              )}
+
+              {/* Message content */}
+              <div className={`text-sm ${msg.role === "user" ? "text-white" : "text-text"}`}>
+                {msg.role === "assistant"
+                  ? renderMessageWithCitations(msg.content, msg.citations || [])
+                  : <p className="whitespace-pre-wrap">{msg.content}</p>
+                }
               </div>
-            )}
 
-            {/* Message content */}
-            <div className={`text-sm ${msg.role === "user" ? "text-white" : "text-text"}`}>
-              {msg.role === "assistant"
-                ? renderMessageWithCitations(msg.content, msg.citations || [])
-                : <p className="whitespace-pre-wrap">{msg.content}</p>
-              }
-            </div>
+              {/* Conflict banners */}
+              {msg.role === "assistant" && msg.conflicts && (
+                <ConflictBanner conflicts={msg.conflicts} />
+              )}
 
-            {/* Conflict banners */}
-            {msg.role === "assistant" && msg.conflicts && (
-              <ConflictBanner conflicts={msg.conflicts} />
-            )}
-
-            {/* Citation summary footer */}
-            {msg.role === "assistant" && msg.citations && msg.citations.length > 0 && (
-              <div className="mt-3 pt-2 border-t border-border-light flex items-center gap-1.5 flex-wrap">
-                <span className="text-[10px] text-text-muted">Sources:</span>
-                {msg.citations.map((citation) => (
-                  <CitationChip key={citation.id} citation={citation} />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      ))}
-
-      {/* Processing indicator */}
-      {isProcessing && (
-        <div className="flex justify-start animate-fade-in">
-          <div className="bg-bg-card border border-border shadow-sm rounded-2xl rounded-bl-md px-4 py-3">
-            <div className="flex items-center gap-2 text-sm text-text-secondary">
-              <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              <span className="font-mono text-xs">{processingStep || "Thinking..."}</span>
+              {/* Citation summary footer */}
+              {msg.role === "assistant" && msg.citations && msg.citations.length > 0 && (
+                <div className="mt-3 pt-2 border-t border-border-light flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[10px] text-text-muted">Sources:</span>
+                  {msg.citations.map((citation) => (
+                    <CitationChip key={citation.id} citation={citation} />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      )}
+        ))}
 
-      <div ref={messagesEndRef} />
+        {/* Processing indicator */}
+        {isProcessing && (
+          <div className="flex justify-start animate-fade-in">
+            <div className="bg-bg-card border border-border shadow-sm rounded-2xl rounded-bl-md px-4 py-3">
+              <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                <span className="font-mono text-xs">{processingStep || "Thinking..."}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div ref={messagesEndRef} />
+      </div>
     </div>
   );
 }
