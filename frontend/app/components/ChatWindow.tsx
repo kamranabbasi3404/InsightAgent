@@ -81,7 +81,7 @@ function renderTextWithFormatting(text: string, keyPrefix: string) {
 
 function renderMessageWithCitations(content: string, citations: Citation[]) {
   if (!citations || citations.length === 0) {
-    return <div className="whitespace-pre-wrap leading-relaxed">{renderTextWithFormatting(content, "fallback")}</div>;
+    return <div className="whitespace-pre-wrap leading-relaxed break-words">{renderTextWithFormatting(content, "fallback")}</div>;
   }
 
   // Replace [Source: ...] patterns with citation chips
@@ -135,7 +135,7 @@ function renderMessageWithCitations(content: string, citations: Citation[]) {
     parts.push(...renderTextWithFormatting(content.slice(lastIndex), `end-${keyId++}`));
   }
 
-  return <div className="whitespace-pre-wrap leading-relaxed">{parts}</div>;
+  return <div className="whitespace-pre-wrap leading-relaxed break-words">{parts}</div>;
 }
 
 export default function ChatWindow({
@@ -204,10 +204,10 @@ export default function ChatWindow({
               )}
 
               {/* Message content */}
-              <div className={`text-sm ${msg.role === "user" ? "text-white" : "text-text"}`}>
+              <div className={`text-sm ${msg.role === "user" ? "text-white" : "text-text"} break-words`}>
                 {msg.role === "assistant"
                   ? renderMessageWithCitations(msg.content, msg.citations || [])
-                  : <p className="whitespace-pre-wrap">{msg.content}</p>
+                  : <p className="whitespace-pre-wrap break-words">{msg.content}</p>
                 }
               </div>
 
