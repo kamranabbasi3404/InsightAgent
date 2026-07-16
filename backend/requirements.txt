@@ -1,0 +1,27 @@
+# FastAPI & Server
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+pydantic
+
+# LangChain & LangGraph
+langchain
+langgraph
+langchain-groq
+langchain-community
+
+# Vector Store
+chromadb
+
+# Embeddings
+sentence-transformers
+
+# PDF Parsing
+pymupdf
+
+# Web Search
+tavily-python
+
+# SSE Streaming
+sse-starlette

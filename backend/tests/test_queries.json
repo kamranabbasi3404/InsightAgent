@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "query": "Hello there, how's it going?",
+    "expected_route": "no_retrieval",
+    "description": "Greeting query"
+  },
+  {
+    "id": 2,
+    "query": "What are your core capabilities as an assistant?",
+    "expected_route": "no_retrieval",
+    "description": "Meta capability query"
+  },
+  {
+    "id": 3,
+    "query": "Can you write a python script to reverse a string?",
+    "expected_route": "no_retrieval",
+    "description": "General code generation task"
+  },
+  {
+    "id": 4,
+    "query": "What is 25 * 40?",
+    "expected_route": "no_retrieval",
+    "description": "Simple math question"
+  },
+  {
+    "id": 5,
+    "query": "Tell me a joke about computers.",
+    "expected_route": "no_retrieval",
+    "description": "Humor query"
+  },
+  {
+    "id": 6,
+    "query": "What was the total value of Pakistan's IT exports in fiscal year 2023-2024 according to the report?",
+    "expected_route": "local_only",
+    "description": "Fact directly covered in local document"
+  },
+  {
+    "id": 7,
+    "query": "What are the government tax rate and foreign currency rules for IT exporters according to the 2024 report?",
+    "expected_route": "local_only",
+    "description": "Policy details from local document"
+  },
+  {
+    "id": 8,
+    "query": "According to local reports, what is the Special Technology Zones Authority (STZA) tax exemption duration?",
+    "expected_route": "local_only",
+    "description": "Specific authority detail from local document"
+  },
+  {
+    "id": 9,
+    "query": "What are the key infrastructure challenges faced by Pakistan's IT sector mentioned in the report?",
+    "expected_route": "local_only",
+    "description": "Infrastructure problems from local document"
+  },
+  {
+    "id": 10,
+    "query": "What does the 2024 report project for Pakistan's IT exports in 2026 under a stable tax policy?",
+    "expected_route": "local_only",
+    "description": "Future projections from local document"
+  },
+  {
+    "id": 11,
+    "query": "Who is the current Prime Minister of Pakistan in 2026?",
+    "expected_route": "web_only",
+    "description": "Real-time political information"
+  },
+  {
+    "id": 12,
+    "query": "What was Pakistan's annual inflation rate in 2025?",
+    "expected_route": "web_only",
+    "description": "Economic data from a post-report year"
+  },
+  {
+    "id": 13,
+    "query": "Who won the ICC Men's T20 World Cup in 2026?",
+    "expected_route": "web_only",
+    "description": "Sports event in 2026"
+  },
+  {
+    "id": 14,
+    "query": "What is the current stock price of Google (Alphabet Inc.) today?",
+    "expected_route": "web_only",
+    "description": "Real-time market stock price"
+  },
+  {
+    "id": 15,
+    "query": "What is the latest weather forecast for Karachi right now?",
+    "expected_route": "web_only",
+    "description": "Real-time weather query"
+  },
+  {
+    "id": 16,
+    "query": "How do Pakistan's IT exports in 2023-2024 compare with the latest figures for 2025 or 2026?",
+    "expected_route": "hybrid",
+    "description": "Comparison of local document historical data with live web update"
+  },
+  {
+    "id": 17,
+    "query": "Are the current IT export tax rates in Pakistan different from the 0.25% policy outlined in the 2024 report?",
+    "expected_route": "hybrid",
+    "description": "Comparison of local document policy with live web rules"
+  },
+  {
+    "id": 18,
+    "query": "Has the Special Technology Zones Authority (STZA) introduced any new incentives in 2025/2026 beyond the 10-year tax exemptions listed in the 2024 report?",
+    "expected_route": "hybrid",
+    "description": "Checking for new policy updates relative to local report"
+  },
+  {
+    "id": 19,
+    "query": "Compare the projections of Pakistan's IT exports reaching $3.5 billion by 2026 from the report with actual 2025/2026 export data.",
+    "expected_route": "hybrid",
+    "description": "Compare historical projections with live web actual statistics"
+  },
+  {
+    "id": 20,
+    "query": "Is PayPal now available in Pakistan in 2026, or is it still a challenge as reported in 2024?",
+    "expected_route": "hybrid",
+    "description": "Comparing local challenge status with current availability status"
+  }
+]
