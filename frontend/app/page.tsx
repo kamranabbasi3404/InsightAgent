@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import ChatWindow from "./components/ChatWindow";
 import ReasoningTrace from "./components/ReasoningTrace";
 import UploadPanel from "./components/UploadPanel";
@@ -30,12 +30,35 @@ export default function Home() {
   const [backendStatus, setBackendStatus] = useState<"checking" | "online" | "offline">("checking");
   const [error, setError] = useState<string | null>(null);
 
+  const hasLoaded = useRef(false);
+
+  // Load chat history from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("insight_agent_chat_history");
+    if (saved) {
+      try {
+        setMessages(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse chat history:", e);
+      }
+    }
+    hasLoaded.current = true;
+  }, []);
+
+  // Save chat history to localStorage when messages update
+  useEffect(() => {
+    if (hasLoaded.current) {
+      localStorage.setItem("insight_agent_chat_history", JSON.stringify(messages));
+    }
+  }, [messages]);
+
   // Check backend health on mount
   useEffect(() => {
     checkHealth()
       .then(() => setBackendStatus("online"))
       .catch(() => setBackendStatus("offline"));
   }, []);
+
 
   // Load documents on mount and after changes
   const refreshDocuments = useCallback(async () => {
@@ -168,6 +191,22 @@ export default function Home() {
             />
             <span className="text-[10px] text-text-muted capitalize">{backendStatus}</span>
           </div>
+
+          {/* Clear Chat */}
+          {messages.length > 0 && (
+            <button
+              onClick={() => {
+                if (confirm("Are you sure you want to clear the chat history?")) {
+                  setMessages([]);
+                  localStorage.removeItem("insight_agent_chat_history");
+                }
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-xs text-text-secondary hover:text-conflict hover:border-conflict hover:bg-conflict-light/10 transition-all cursor-pointer"
+            >
+              <span>🗑</span>
+              <span>Clear Chat</span>
+            </button>
+          )}
 
           {/* Document count */}
           <button
