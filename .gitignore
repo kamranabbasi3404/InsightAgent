@@ -30,3 +30,12 @@ Thumbs.db
 
 # Uploads
 backend/uploads/
+
+# Project Documentation (Excluded from Git)
+architecture.md
+design.md
+memory.md
+phases.md
+PRD.md
+rules.md
+
